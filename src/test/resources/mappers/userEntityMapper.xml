@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="reids.clients.mapper.UserEntityMapper">
+
+    <!--单个插入-->
+    <insert id="insertEntity" parameterType="user">
+        INSERT INTO `user` (	uid, acc, name, appearance, sex, level, experience, goldCoin, diamonds, giftCert, feats, weaponSet, createTime, lastLoginTime	)
+        VALUES( #{uid}, #{acc}, #{name}, #{appearance}, #{sex}, #{level}, #{experience}, #{goldCoin}, #{diamonds}, #{giftCert}, #{feats}, #{weaponSet}, #{createTime}, #{lastLoginTime} )
+    </insert>
+
+    <select id="getEntity" resultType="user" parameterType="user">
+		SELECT * FROM `user` WHERE acc = #{acc}
+    </select>
+
+    <select id="getEntityList" resultType="user" parameterType="user">
+		SELECT	* FROM `user`
+    </select>
+
+    <select id="filterList" resultType="user" parameterType="map">
+        SELECT * FROM `user`
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="acc !=null and acc !='' ">
+                AND acc = #{acc}
+            </if>
+            <if test="name !=null and name !='' ">
+                AND name = #{name}
+            </if>
+            <if test="appearance !=null and appearance !='' ">
+                AND appearance = #{appearance}
+            </if>
+            <if test="sex !=null and sex !='' ">
+                AND sex = #{sex}
+            </if>
+            <if test="level !=null and level !='' ">
+                AND level = #{level}
+            </if>
+            <if test="experience !=null and experience  !='' ">
+                AND experience = #{experience}
+            </if>
+            <if test="goldCoin !=null and goldCoin !='' ">
+                AND goldCoin = #{goldCoin}
+            </if>
+            <if test="diamonds !=null and diamonds !='' ">
+                AND diamonds = #{diamonds}
+            </if>
+            <if test="giftCert !=null and giftCert !='' ">
+                AND giftCert = #{giftCert}
+            </if>
+            <if test="feats !=null and feats !='' ">
+                AND feats = #{feats}
+            </if>
+            <if test="createTime !=null and createTime !='' ">
+                AND createTime = #{createTime}
+            </if>
+            <if test="lastLoginTime !=null and lastLoginTime !='' ">
+                AND lastLoginTime = #{lastLoginTime}
+            </if>
+        </trim>
+        ORDER BY uid
+    </select>
+
+    <update id="updateEntityByMap" parameterType="map">
+        UPDATE `user`
+        <trim prefix="SET" suffixOverrides=",">
+	    <if test="acc !=null and acc !='' ">
+                acc = #{acc},
+            </if>
+            <if test="name !=null and name !='' ">
+                name = #{name},
+            </if>
+            <if test="appearance !=null and appearance !='' ">
+                appearance = #{appearance},
+            </if>
+            <if test="sex !=null and sex !='' ">
+                sex = #{sex},
+            </if>
+            <if test="level !=null and level !='' ">
+                level = #{level},
+            </if>
+            <if test="experience !=null and experience !='' ">
+                experience = #{experience},
+            </if>
+            <if test="goldCoin !=null and goldCoin !='' ">
+                goldCoin = #{goldCoin},
+            </if>
+            <if test="diamonds !=null and diamonds !='' ">
+                diamonds = #{diamonds},
+            </if>
+            <if test="giftCert !=null and giftCert !='' ">
+                giftCert = #{giftCert},
+            </if>
+            <if test="feats !=null and feats !='' ">
+                feats = #{feats},
+            </if>
+            <if test="weaponSet !=null and weaponSet !='' ">
+                weaponSet = #{weaponSet},
+            </if>
+            <if test="createTime !=null and createTime !='' ">
+                createTime = #{createTime},
+            </if>
+            <if test="lastLoginTime !=null and lastLoginTime !='' ">
+                lastLoginTime = #{lastLoginTime},
+            </if>
+        </trim>
+        WHERE uid = #{uid};
+    </update>
+
+    <delete id="deleteEntity" parameterType="user" >
+        DELETE FROM `user` WHERE uid = #{uid}
+    </delete>
+	
+</mapper>

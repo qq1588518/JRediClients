@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+	
+	<!-- 下面两个属性值用于测试 -->
+<!-- 	<property name="log_path" value="d:/log/Game" /> -->
+<!--     <property name="log_name" value="GameServer" /> -->
+    
+    <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
+    <property name="LOG_HOME" value="${log_path}" />
+    
+    <!-- 控制台输出日志 -->  
+    <appender name="Console" class="ch.qos.logback.core.ConsoleAppender">  
+        <encoder>
+            <pattern>%d [Thread:%thread] %-36logger{36} L%-4line %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+	<appender name="ServerFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">  
+            <level>INFO</level>
+        </filter>  
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/${log_name}_%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d [Thread:%thread] %-36logger{36} L%-4line %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender> 
+
+	<appender name="ServerDebugFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">  
+	          <level>DEBUG</level> 
+	          <onMatch>ACCEPT</onMatch>
+      		  <onMismatch>DENY</onMismatch>
+	    </filter> 
+	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+	    	<fileNamePattern>${log_path}/${log_name}_%d{yyyy-MM-dd}.debug.log</fileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d [Thread:%thread] %logger\(%file:%line\) %-5level - %m%n</pattern>
+			<charset>UTF-8</charset>
+		</encoder>
+	</appender>
+	
+	<appender name="ServerErrorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">  
+            <level>ERROR</level>  
+        </filter> 
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${log_path}/${log_name}_%d{yyyy-MM-dd}.error.log</fileNamePattern>
+        </rollingPolicy> 
+        <encoder>
+            <pattern>%d [Thread:%thread] %logger\(%file:%line\) %-5level - %m%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender> 
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+       <!-- 日志输出编码 -->
+       <Encoding>UTF-8</Encoding>
+       <layout class="ch.qos.logback.classic.PatternLayout">
+             <!--格式化输出：%d表示日期，%thread表示线程名，%-5level：级别从左显示5个字符宽度%msg：日志消息，%n是换行符-->
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n</pattern>
+       </layout>
+    </appender>
+    <appender name="kodBiLog" class="ch.qos.logback.classic.sift.SiftingAppender">
+	    <discriminator>
+	        <Key>LOG_NAME</Key>
+	        <DefaultValue>unknown</DefaultValue>
+	    </discriminator>
+	    <sift>
+		    <appender name="log"  class="ch.qos.logback.core.rolling.RollingFileAppender">
+		        <Encoding>UTF-8</Encoding>
+		        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+		            <FileNamePattern>${LOG_HOME}/kodbilog_gymj/${LOG_NAME}/${LOG_NAME}.%d{yyyy-MM-dd-HH}.log</FileNamePattern>
+		        </rollingPolicy>
+		        <layout class="ch.qos.logback.classic.PatternLayout">
+		            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS}%msg%n</pattern>
+		       	</layout>
+		    </appender>
+    	</sift>
+    </appender>
+	<logger name="com.redis.clients.kodbilog.KodBiLog" level="INFO" additivity="false">
+    	<appender-ref ref="kodBiLog"/>
+  	</logger>
+	
+	<!-- 异步实现日志的存储-->
+	<appender name="ASVN_Console" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<!-- 该值会影响性能，默认256-->
+		<queueSize>256</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="Console"/>
+	</appender>
+	<appender name="ASVN_ServerFile" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="ServerFile"/>
+	</appender>
+	<appender name="ASVN_ServerDebugFile" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="ServerDebugFile"/>
+	</appender>
+	<appender name="ASVN_ServerErrorFile" class="ch.qos.logback.classic.AsyncAppender">
+		<discardingThreshold>0</discardingThreshold>
+		<queueSize>256</queueSize>
+		<includeCallerData>true</includeCallerData>
+		<appender-ref ref="ServerErrorFile"/>
+	</appender>
+	
+	<!--调用异步appender-->
+ 	<logger name="com.redis.clients" additivity="false">
+    	<appender-ref ref="ASVN_Console"/> 
+    </logger>
+    <logger name="com.redis">
+       <appender-ref ref="ASVN_Console"/>
+        <appender-ref ref="ASVN_ServerFile"/>
+		<appender-ref ref="ASVN_ServerDebugFile"/>
+        <appender-ref ref="ASVN_ServerErrorFile"/>
+    </logger>
+	<!--暂时还没有用到异步存储-->
+    <root level="info">
+    </root>
+    <logger name="com.redis.clients.timer.TimerMgr">
+    	<level value="WARN" />
+	</logger>
+	 <logger name="com.redis.clients.task.TaskService">
+    	<level value="WARN" />
+	</logger>
+	 <logger name="com.redis.clients.event.EventData">
+    	<level value="WARN" />
+	</logger>
+</configuration>
