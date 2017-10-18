@@ -5,8 +5,8 @@
 
     <!--单个插入-->
     <insert id="insertEntity" parameterType="user">
-        INSERT INTO `user` (	uid, acc, name, appearance, sex, level, experience, goldCoin, diamonds, giftCert, feats, weaponSet, createTime, lastLoginTime	)
-        VALUES( #{uid}, #{acc}, #{name}, #{appearance}, #{sex}, #{level}, #{experience}, #{goldCoin}, #{diamonds}, #{giftCert}, #{feats}, #{weaponSet}, #{createTime}, #{lastLoginTime} )
+        INSERT INTO `user` (	uid, acc, name, appearance, sex, level, experience, goldCoin, diamonds, giftCert, feats, weaponSet, createTime, lastLoginTime, version	)
+        VALUES( #{uid}, #{acc}, #{name}, #{appearance}, #{sex}, #{level}, #{experience}, #{goldCoin}, #{diamonds}, #{giftCert}, #{feats}, #{weaponSet}, #{createTime}, #{lastLoginTime} ,#{version} )
     </insert>
 
     <select id="getEntity" resultType="user" parameterType="user">
@@ -56,6 +56,9 @@
             <if test="lastLoginTime !=null and lastLoginTime !='' ">
                 AND lastLoginTime = #{lastLoginTime}
             </if>
+            <if test="version !=null and version !='' ">
+                AND version = #{version}
+            </if>
         </trim>
         ORDER BY uid
     </select>
@@ -101,6 +104,9 @@
             </if>
             <if test="lastLoginTime !=null and lastLoginTime !='' ">
                 lastLoginTime = #{lastLoginTime},
+            </if>
+            <if test="version !=null and version !='' ">
+                version = #{version},
             </if>
         </trim>
         WHERE uid = #{uid};

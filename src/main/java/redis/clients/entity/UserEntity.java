@@ -129,6 +129,9 @@ public class UserEntity extends BaseStringIDEntity implements RedisInterface, Cl
 	@FieldSave2Redis
 	private long teamId = 0;
 	
+	@FieldSave
+	private long version;
+	
 	public UserEntity() {
 		init();
 
@@ -242,6 +245,11 @@ public class UserEntity extends BaseStringIDEntity implements RedisInterface, Cl
 		return this.teamId;
 	}
 	
+	/** Gets */
+	@Override
+	public long getVersion() {
+		return version;
+	}
 	
 	/** Initializes the values */
 	public void init() {
@@ -268,6 +276,7 @@ public class UserEntity extends BaseStringIDEntity implements RedisInterface, Cl
 		this.lastLoginTime = System.currentTimeMillis();
 		this.missionId = 0;
 		this.teamId = 0;
+		this.version = 0;
 	}
 
 	/** Sets */
@@ -388,6 +397,12 @@ public class UserEntity extends BaseStringIDEntity implements RedisInterface, Cl
 		this.teamId = teamId;
 	}
 
+	/** Sets */
+	@Override
+	@MethodSaveProxy(proxy = "version")
+	public void setVersion(long version) {
+		this.version = version;
+	}
 	/** depth clone **/
 	public Object clone() {
 		try {
@@ -406,45 +421,47 @@ public class UserEntity extends BaseStringIDEntity implements RedisInterface, Cl
 	/** Returns the String representation */
 	public String toString() {
 		return "(UserEntity) " 
-				+ "id='" + id + "', " 
-				+ "uid='" + uid + "', " 
-				+ "acc='" + acc + "', " 
-				+ "name='" + name + "', " 
-				+ "appearance='" + appearance + "', " 
-				+ "sex='" + sex	+ "', " 
-				+ "level='" + level + "', " 
-				+ "experience='" + experience + "', " 
-				+ "goldCoin='" + goldCoin + "', " 
-				+ "diamonds='" + diamonds + "', " 
-				+ "giftCert='" + giftCert + "', " 
-				+ "feats='" + feats + "', " 
-				+ "weaponSet='" + weaponSet + "', " 
-				+ "createTime='" + createTime + "', " 
-				+ "lastLoginTime='" + lastLoginTime + "', " 
-				+ "missionId='" + missionId + "'," 
-				+ "teamId='" + teamId + "'";
+				+ "id='" + id + "', "
+				+ "uid='" + uid + "', "
+				+ "acc='" + acc + "', "
+				+ "name='" + name + "', "
+				+ "appearance='" + appearance + "', "
+				+ "sex='" + sex	+ "', "
+				+ "level='" + level + "', "
+				+ "experience='" + experience + "', "
+				+ "goldCoin='" + goldCoin + "', "
+				+ "diamonds='" + diamonds + "', "
+				+ "giftCert='" + giftCert + "', "
+				+ "feats='" + feats + "', "
+				+ "weaponSet='" + weaponSet + "', "
+				+ "createTime='" + createTime + "', "
+				+ "lastLoginTime='" + lastLoginTime + "', "
+				+ "missionId='" + missionId + "',"
+				+ "teamId='" + teamId + "',"
+				+ "version='" + version + "'";
 	}
 
 	/** Returns the CSV String */
 	public String toCSVLine() {
 		return "\"" 
-				+ id + "\",\"" 
-				+ uid + "\",\"" 
-				+ acc + "\",\"" 
-				+ name + "\",\"" 
-				+ appearance + "\",\"" 
-				+ sex + "\",\"" 
-				+ level + "\",\"" 
-				+ experience + "\",\"" 
-				+ goldCoin + "\",\"" 
-				+ diamonds + "\",\"" 
-				+ giftCert + "\",\"" 
-				+ feats + "\",\"" 
-				+ weaponSet + "\",\"" 
-				+ createTime + "\",\"" 
-				+ lastLoginTime + "\",\"" 
+				+ id + "\",\""
+				+ uid + "\",\""
+				+ acc + "\",\""
+				+ name + "\",\""
+				+ appearance + "\",\""
+				+ sex + "\",\""
+				+ level + "\",\""
+				+ experience + "\",\""
+				+ goldCoin + "\",\""
+				+ diamonds + "\",\""
+				+ giftCert + "\",\""
+				+ feats + "\",\""
+				+ weaponSet + "\",\""
+				+ createTime + "\",\""
+				+ lastLoginTime + "\",\""
 				+ missionId + "\",\""
-				+ teamId + "\"";
+				+ teamId + "\",\""
+				+ version + "\"";
 	}
 
 	@Override

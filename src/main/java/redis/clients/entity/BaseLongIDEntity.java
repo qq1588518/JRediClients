@@ -67,4 +67,14 @@ public class BaseLongIDEntity extends AbstractEntity {
 		
 	}
 
+	@Override
+	public long getVersion() {
+		return 0;
+	}
+
+	@Override
+	public void setVersion(long version) {
+		
+	}
+
 }

@@ -24,4 +24,8 @@ public interface IEntity extends Serializable {
 	public Date getDeleteTime();
 
 	public void setDeleteTime(Date deleteTime);
+	
+	public long getVersion();
+	
+	public void setVersion(long version);
 }

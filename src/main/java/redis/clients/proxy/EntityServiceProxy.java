@@ -62,7 +62,7 @@ public class EntityServiceProxy<T extends EntityService> implements MethodInterc
 				abstractEntity = (AbstractEntity) args[0];
 				if(abstractEntity != null) {
 					ret = EntityUtils.updateAllFieldEntity(redisService, abstractEntity);
-					result = ret ? 1:result;
+					result = ret ? true:result;
 				}
 				break;
 			case insertBatch:
@@ -138,6 +138,18 @@ public class EntityServiceProxy<T extends EntityService> implements MethodInterc
 						abstractEntity = (AbstractEntity) result;
 						ret = EntityUtils.updateAllFieldEntity(redisService, abstractEntity);
 					}
+				}else {
+					Object result1 = methodProxy.invokeSuper(obj, args);
+					if (result1 != null) {
+						AbstractEntity abstractEntity0 = (AbstractEntity) result;
+						AbstractEntity abstractEntity1 = (AbstractEntity) result1;
+						if(abstractEntity0.getVersion() < abstractEntity1.getVersion()) {
+							ret = EntityUtils.updateAllFieldEntity(redisService, abstractEntity1);
+							result = result1;
+						}
+					}else {
+						
+					}
 				}
 				break;
 			case queryList:
@@ -145,7 +157,7 @@ public class EntityServiceProxy<T extends EntityService> implements MethodInterc
 				if (abstractEntity != null) {
 					if (abstractEntity instanceof RedisListInterface) {
 						RedisListInterface redisInterface = (RedisListInterface) abstractEntity;
-						result = redisService.getListFromHash(EntityUtils.getRedisListKey(redisInterface),
+						entityList = redisService.getListFromHash(EntityUtils.getRedisListKey(redisInterface),
 								abstractEntity.getClass());
 						// if (result != null) {
 						// result = filterEntity((List<IEntity>) result, abstractEntity);
@@ -157,7 +169,9 @@ public class EntityServiceProxy<T extends EntityService> implements MethodInterc
 					//			+ abstractEntity.toString());
 					//}
 				}
-				if (result == null) {
+				if ((entityList != null)&&(entityList.size() > 0)) {
+					result = entityList;
+				}else {
 					result = methodProxy.invokeSuper(obj, args);
 					if (result != null) {
 						retlist = EntityUtils.updateAllFieldEntityList(redisService, (List<AbstractEntity>) result);

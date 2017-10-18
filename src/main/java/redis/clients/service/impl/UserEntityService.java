@@ -65,6 +65,7 @@ public class UserEntityService extends EntityService<UserEntity> implements IUse
 	@Override
 	public boolean updateUser(UserEntity entity) {
 		try {
+			entity.setVersion(entity.getVersion()+1);
 			return updateEntity(entity);
 		} catch (Exception e) {
 			// e.printStackTrace();
